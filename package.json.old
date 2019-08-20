@@ -1,0 +1,52 @@
+{
+  "name": "coc-vetur",
+  "version": "1.1.4",
+  "description": "Vue language server extension for coc.nvim using vetur",
+  "main": "lib/index.js",
+  "publisher": "vantreeseba",
+  "engines": {
+    "coc": "^0.0.58"
+  },
+  "keywords": [
+    "coc.nvim",
+    "haxe"
+  ],
+  "scripts": {
+    "clean": "rimraf lib",
+    "build": "webpack",
+    "prepare": "npx npm-run-all clean build"
+  },
+  "activationEvents": [
+    "onLanguage:haxe"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "Haxe",
+      "properties": {
+        "vetur.useWorkspaceDependencies": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use dependencies from workspace. Currently only for TypeScript."
+        }
+      }
+    }
+  },
+  "author": "vantreeseba@gmail.com",
+  "license": "MIT",
+  "devDependencies": {
+    "@chemzqm/tsconfig": "^0.0.3",
+    "@chemzqm/tslint-config": "^1.0.18",
+    "@types/node": "^12.7.2",
+    "coc.nvim": "^0.0.73",
+    "rimraf": "^3.0.0",
+    "ts-loader": "^6.0.4",
+    "tslint": "^5.18.0",
+    "typescript": "^3",
+    "vscode-languageserver-protocol": "^3.15.0-next.6",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  },
+  "dependencies": {
+    "haxe-language-server": "^0.0.60"
+  }
+}
