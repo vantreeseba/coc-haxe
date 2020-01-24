@@ -1,7 +1,5 @@
-import {commands, ExtensionContext, LanguageClient, ServerOptions, workspace, services, TransportKind, LanguageClientOptions, WorkspaceConfiguration, ProvideCompletionItemsSignature} from 'coc.nvim'
-import {TextDocument, Position, CompletionItem, CompletionList, InsertTextFormat, DocumentSelector} from 'vscode-languageserver-protocol'
-// import {CompletionContext} from 'vscode-languageserver-protocol'
-// import {CancellationToken} from 'vscode-jsonrpc'
+import {commands, ExtensionContext, LanguageClient, ServerOptions, workspace, services, TransportKind, LanguageClientOptions, WorkspaceConfiguration} from 'coc.nvim'
+import {CompletionItem, InsertTextFormat, DocumentSelector} from 'vscode-languageserver-protocol'
 import {Command, RestartClientCommand} from './commands'
 import fs from 'fs'
 declare var __webpack_require__: any
@@ -22,12 +20,13 @@ function getConfig(config: WorkspaceConfiguration): any {
 export async function activate(context: ExtensionContext): Promise<void> {
   let {subscriptions} = context
   let c = workspace.getConfiguration()
-  const config = c.get('haxe') as any
-  const enable = config.enable
+  const haxeConfig = c.get('haxe') as any
+  const enable = haxeConfig.enable
   if (enable === false) return
   let file: string
-  if (config.useInternal) {
-    file = requireFunc.resolve('../bin/server')
+
+  if (haxeConfig.useModule) {
+    file = requireFunc.resolve(haxeConfig.modulePath)
     if (!fs.existsSync(file)) {
       workspace.showMessage(`haxe server module not found!`, 'error')
       return
@@ -36,6 +35,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     workspace.showMessage('External server not supported yet.', 'error')
     return;
   }
+
   const selector: DocumentSelector = [{
     language: 'haxe',
     scheme: 'file'
@@ -46,77 +46,50 @@ export async function activate(context: ExtensionContext): Promise<void> {
     transport: TransportKind.stdio,
     options: {
       cwd: workspace.root,
-      execArgv: config.execArgv || []
+      execArgv: haxeConfig.execArgv || []
     }
   }
+
+  workspace.showMessage("Started server with: " + JSON.stringify(haxeConfig), 'more');
 
   let clientOptions: LanguageClientOptions = {
     documentSelector: selector,
     synchronize: {
       configurationSection: sections,
-      fileEvents: workspace.createFileSystemWatcher('**/*.[tj]s', true, false, true)
+      fileEvents: workspace.createFileSystemWatcher('**/*.hx', false, false, false)
     },
     outputChannelName: 'haxe',
     initializationOptions: {
-      displayArguments: ["build.hxml"],
+      displayArguments: [haxeConfig.hxml],
       config: getConfig(c)
     },
-    // middleware: {
-      // provideCompletionItem: (
-        // document: TextDocument,
-        // position: Position,
-        // context: CompletionContext,
-        // token: CancellationToken,
-        // next: ProvideCompletionItemsSignature
-      // ) => {
-        // return Promise.resolve(next(document, position, context, token)).then((res: CompletionItem[] | CompletionList) => {
-          // let doc = workspace.getDocument(document.uri)
-          // if (!doc || !res) return []
-          // let items: CompletionItem[] = res.hasOwnProperty('isIncomplete') ? (res as CompletionList).items : res as CompletionItem[]
-          // let pre = doc.getline(position.line).slice(0, position.character)
-          // // searching for class name
-          // if (/(^|\s)\.\w*$/.test(pre)) {
-            // items = items.filter(o => o.label.startsWith('.'))
-            // items.forEach(fixItem)
-          // }
-          // if (context.triggerCharacter == ':'
-            // || /\:\w*$/.test(pre)) {
-            // items = items.filter(o => o.label.startsWith(':'))
-            // items.forEach(fixItem)
-          // }
-          // return items
-        // })
-      // }
-    // }
   }
 
   let client = new LanguageClient('haxe', 'Haxe Language Server', serverOptions, clientOptions)
   workspace.showMessage('Haxe language server client starting.', 'more')
-  client.onReady().then((x) => {
+  client.onReady().then(() => {
     workspace.showMessage('Haxe language server client started.', 'more')
     registerCustomClientNotificationHandlers(client)
   }).catch(_e => {
     // noop
   })
 
-
-  function registCommand(cmd: Command): void {
-    let { id, execute } = cmd
+  function registerCommand(cmd: Command): void {
+    let {id, execute} = cmd
     subscriptions.push(commands.registerCommand(id as string, execute, cmd))
   }
-
 
   subscriptions.push(
     services.registLanguageClient(client)
   )
 
-  registCommand(new RestartClientCommand(client))
+  registerCommand(new RestartClientCommand(client))
 
-  languages.registerCodeActionProvider(
-        languageIds,
-        new QuickfixProvider(client),
-        'tsserver',
-        [CodeActionKind.QuickFix]))
+  // languages.registerCodeActionProvider(
+  // languageIds,
+  // new QuickfixProvider(client),
+  // 'tsserver',
+  // [CodeActionKind.QuickFix]);
 }
 function registerCustomClientNotificationHandlers(client: LanguageClient): void {
   client.onNotification('$/displayInfo', (msg: string) => {
@@ -130,10 +103,10 @@ function registerCustomClientNotificationHandlers(client: LanguageClient): void 
   })
 }
 
-function fixItem(item: CompletionItem): void {
-  item.data = item.data || {}
-  item.data.abbr = item.label
-  item.label = item.label.slice(1)
-  item.textEdit = null
-  item.insertTextFormat = InsertTextFormat.PlainText
-}
+// function fixItem(item: CompletionItem): void {
+  // item.data = item.data || {}
+  // item.data.abbr = item.label
+  // item.label = item.label.slice(1)
+  // item.textEdit = null
+  // item.insertTextFormat = InsertTextFormat.PlainText
+// }

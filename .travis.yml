@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+- node
+cache:
+  directories:
+  - node_modules
+deploy:
+  provider: npm
+  email: vantreeseba@gmail.com
+  api_key:
+    secure: MDJXydGYNuRk6iP3HkeIAvxALJRhveGI/xkm6fwS8uO8e19ThHq3xr5jgf098PW5WOQ6kIRmSuYAD2Z6ecUfj3yntnS3Y+aMyzWTaJWun7la4gNGRrz/WtN6OKN4x/7AyI0SeWuqsxDsYHKT7naf0Ns01FL2tfjJWvg/e3B1bpN9LEG+PGc8qNRiVBkTI5WUYJ4KPhtz0KTcTTnLTFnqKBsIzkQwgFStbzFNhnXc/2kFIFe8N3nKy0lmNevm/GWsmnkP5NOeEkIG6id4vdKH5oGbOnGpKN/09gdTVy8+S+e6ZQWuYNTkTUOu0z5NuccnPHVF3FNvLGfGY++bXrFaCLS6zevvjE7EeWraxb9Prx1u8qrs7rX4FfTUsFfXTBB4BJ6IL2pD9tw5ZFmH4QAzaD5Q8CpgMtFJSfA/LmXzwSjo9JEQnPwJ9akLGez6CetKN/9ejPFPJG+hLVUgLJOTCtSTGX7YyLWvpHQWpOBnNxPTf0Q3/iIPlWuXHbv8f14nDyN6f5Z6t/G24mbPgL3bbDuFB9X8iSreuU46tPpsx4W2BngrJsrZOqMCZL+OIn6hSl5pgr/2Sqbr5k9o8/7ka8lpnxrr7FTgWv8ioBUBk8awodgANEgVwsON8Fncg1gixTHEm3UdGABpqeVbdgtppuoPEGFJKYe/Bb6/AW23nF8=
+  on:
+    tags: true
+    repo: vantreeseba/coc-haxe

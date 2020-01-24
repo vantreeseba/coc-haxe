@@ -18,9 +18,18 @@ Language server features provided by [haxe-language-server](https://github.com/v
 
 ## Configuration options
 
-- "haxe.useInternal":
+- "haxe.useModule":
 
-      Use the included haxe language server (this is the only supported way at the moment.),  default: `true`
+      Use the haxe language server module. (Non module not supported ATM),  default: `true`
+
+- "haxe.modulePath":
+
+      Use haxe language server module at given path.,  default: `../bin/server`
+
+- "haxe.hxml":
+
+      The HXML file to use for building the project.,  default: `build.hxml`
+
 
 Trigger completion in `coc-settings.json` to get full list of options.
 

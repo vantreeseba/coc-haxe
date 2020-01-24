@@ -32,10 +32,20 @@
     "configuration": {
       "title": "Haxe",
       "properties": {
-        "haxe.useInternal": {
+        "haxe.useModule": {
           "type": "bool",
           "default": true,
           "description": "Use internal language server module."
+        },
+        "haxe.modulePath": {
+          "type": "string",
+          "default": "../bin/server",
+          "description": "Path to haxe server module."
+        },
+        "haxe.hxml": {
+          "type": "string",
+          "default": "build.hxml",
+          "description": "Path to hxml for project."
         }
       }
     }
