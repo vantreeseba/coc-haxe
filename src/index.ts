@@ -1,6 +1,7 @@
 import {commands, ExtensionContext, LanguageClient, ServerOptions, workspace, services, TransportKind, LanguageClientOptions, WorkspaceConfiguration} from 'coc.nvim'
 import {DocumentSelector} from 'vscode-languageserver-protocol'
-import {Command, RestartClientCommand, HaxeGotoHxmlCommand} from './commands'
+import Command from './commands/Command'
+import Commands from './commands'
 import fs from 'fs'
 declare var __webpack_require__: any
 declare var __non_webpack_require__: any
@@ -79,12 +80,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
     subscriptions.push(commands.registerCommand(id as string, execute, cmd))
   }
 
+  Commands.forEach(cmd => registerCommand(new cmd(client)))
+
   subscriptions.push(
     services.registLanguageClient(client)
   )
-
-  registerCommand(new RestartClientCommand(client))
-  registerCommand(new HaxeGotoHxmlCommand(client))
 
   // languages.registerCodeActionProvider(
   // languageIds,
@@ -92,6 +92,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   // 'tsserver',
   // [CodeActionKind.QuickFix]);
 }
+
 function registerCustomClientNotificationHandlers(client: LanguageClient): void {
   client.onNotification('$/displayInfo', (msg: string) => {
     workspace.showMessage(msg, 'more')
@@ -103,11 +104,3 @@ function registerCustomClientNotificationHandlers(client: LanguageClient): void 
     workspace.showMessage(msg, 'error')
   })
 }
-
-// function fixItem(item: CompletionItem): void {
-  // item.data = item.data || {}
-  // item.data.abbr = item.label
-  // item.label = item.label.slice(1)
-  // item.textEdit = null
-  // item.insertTextFormat = InsertTextFormat.PlainText
-// }
