@@ -1,6 +1,6 @@
 import {commands, ExtensionContext, LanguageClient, ServerOptions, workspace, services, TransportKind, LanguageClientOptions, WorkspaceConfiguration} from 'coc.nvim'
-import {CompletionItem, InsertTextFormat, DocumentSelector} from 'vscode-languageserver-protocol'
-import {Command, RestartClientCommand} from './commands'
+import {DocumentSelector} from 'vscode-languageserver-protocol'
+import {Command, RestartClientCommand, HaxeGotoHxmlCommand} from './commands'
 import fs from 'fs'
 declare var __webpack_require__: any
 declare var __non_webpack_require__: any
@@ -84,6 +84,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   )
 
   registerCommand(new RestartClientCommand(client))
+  registerCommand(new HaxeGotoHxmlCommand(client))
 
   // languages.registerCodeActionProvider(
   // languageIds,
