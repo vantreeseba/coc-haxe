@@ -1,4 +1,14 @@
-import {commands, ExtensionContext, LanguageClient, ServerOptions, workspace, services, TransportKind, LanguageClientOptions, WorkspaceConfiguration} from 'coc.nvim'
+import {
+  commands,
+  ExtensionContext,
+  LanguageClient,
+  ServerOptions,
+  workspace,
+  services,
+  TransportKind,
+  LanguageClientOptions,
+  WorkspaceConfiguration
+} from 'coc.nvim'
 import {DocumentSelector} from 'vscode-languageserver-protocol'
 import Command from './commands/Command'
 import Commands from './commands'
@@ -24,11 +34,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
   const haxeConfig = c.get('haxe') as any
   const enable = haxeConfig.enable
   if (enable === false) return
-  let file: string
+  let modulePath: string
 
   if (haxeConfig.useModule) {
-    file = requireFunc.resolve(haxeConfig.modulePath)
-    if (!fs.existsSync(file)) {
+    modulePath = requireFunc.resolve(haxeConfig.modulePath)
+    if (!fs.existsSync(modulePath)) {
       workspace.showMessage(`haxe server module not found!`, 'error')
       return
     }
@@ -43,7 +53,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   }]
 
   let serverOptions: ServerOptions = {
-    module: file,
+    module: modulePath,
     transport: TransportKind.stdio,
     options: {
       cwd: workspace.root,
@@ -80,7 +90,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
     subscriptions.push(commands.registerCommand(id as string, execute, cmd))
   }
 
-  Commands.forEach(cmd => registerCommand(new cmd(client)))
+  Commands.forEach(cmd => {
+    var c = new cmd(client);
+    workspace.showMessage('registering: ' + c.id);
+    registerCommand(c);
+  })
 
   subscriptions.push(
     services.registLanguageClient(client)

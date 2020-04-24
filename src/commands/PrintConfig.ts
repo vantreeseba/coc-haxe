@@ -2,7 +2,7 @@ import {LanguageClient, workspace} from 'coc.nvim'
 import Command from './Command'
 
 export default class RestartClientCommand implements Command {
-  public readonly id = 'haxe.restart'
+  public readonly id = 'haxe.printConfig'
 
   public constructor(
     private readonly client: LanguageClient
@@ -10,10 +10,7 @@ export default class RestartClientCommand implements Command {
   }
 
   public execute(): void {
-    this.client.stop().then(() => {
-      this.client.restart();
-      workspace.showMessage('projects reloaded')
-    });
+    workspace.showMessage(JSON.stringify(workspace.getConfiguration('haxe')));
   }
 }
 
