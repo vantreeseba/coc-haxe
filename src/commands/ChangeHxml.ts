@@ -9,11 +9,8 @@ export default class HaxeChangeHxmlCommand implements Command {
   ) {}
 
   public async execute(hxml: string): Promise<void> {
-    // var config = {settings: {haxe: {hxml}}};
-    // this.client.sendNotification("workspace/didChangeConfiguration", config);
+    workspace.configurations.getConfiguration('haxe').update('hxml', hxml);
     this.client.sendNotification("haxe/didChangeDisplayArguments", {arguments: [hxml]});
-    // this.client.sendRequest("haxe/")
-    // workspace.showMessage("Changed hxml to: " + hxml);
   }
 }
 
