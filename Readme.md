@@ -2,7 +2,7 @@
 
 Haxe language server extension for [coc.nvim](https://github.com/neoclide/coc.nvim).
 
-Using [haxe-language-server](https://github.com/vshaxe/haxe-language-server).
+Language server features provided by [haxe-language-server](https://github.com/vshaxe/haxe-language-server).
 
 ## Install
 
@@ -11,10 +11,6 @@ In your vim/neovim, run command:
 ```
 :CocInstall coc-haxe
 ```
-
-## Features
-
-Language server features provided by [haxe-language-server](https://github.com/vshaxe/haxe-language-server).
 
 ## Configuration options
 
@@ -32,6 +28,13 @@ Language server features provided by [haxe-language-server](https://github.com/v
 
 
 Trigger completion in `coc-settings.json` to get full list of options.
+
+## Commands
+
+- `haxe.goToHxml` jump to the current hxml in the configuration. 
+- `haxe.changeHxml some.hxml` tell haxe language server to use another hxml.
+- `haxe.restart` restarts the coc client for haxe language server. 
+- `haxe.printConfig` prints the current haxe language server config. 
 
 ## License
 
