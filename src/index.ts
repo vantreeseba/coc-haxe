@@ -17,7 +17,7 @@ declare var __webpack_require__: any
 declare var __non_webpack_require__: any
 const requireFunc = typeof __webpack_require__ === "function" ? __non_webpack_require__ : require
 
-const sections = [];
+const sections = ['haxe']
 
 function getConfig(config: WorkspaceConfiguration): any {
   let res = {}
@@ -44,11 +44,14 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }
   } else {
     workspace.showMessage('External server not supported yet.', 'error')
-    return;
+    return
   }
 
   const selector: DocumentSelector = [{
     language: 'haxe',
+    scheme: 'file'
+  }, {
+    language: 'hxml',
     scheme: 'file'
   }]
 
@@ -61,13 +64,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
     }
   }
 
-  workspace.showMessage("Started server with: " + JSON.stringify(haxeConfig), 'more');
-
   let clientOptions: LanguageClientOptions = {
     documentSelector: selector,
     synchronize: {
       configurationSection: sections,
-      fileEvents: workspace.createFileSystemWatcher('**/*.hx', false, false, false)
+      fileEvents: workspace.createFileSystemWatcher('**/*.hx*', false, false, false)
     },
     outputChannelName: 'haxe',
     initializationOptions: {
@@ -77,12 +78,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
   }
 
   let client = new LanguageClient('haxe', 'Haxe Language Server', serverOptions, clientOptions)
-  workspace.showMessage('Haxe language server client starting.', 'more')
   client.onReady().then(() => {
-    workspace.showMessage('Haxe language server client started.', 'more')
     registerCustomClientNotificationHandlers(client)
   }).catch(_e => {
     // noop
+    workspace.showMessage('Haxe language server client failed.', 'more')
   })
 
   function registerCommand(cmd: Command): void {
@@ -91,20 +91,14 @@ export async function activate(context: ExtensionContext): Promise<void> {
   }
 
   Commands.forEach(cmd => {
-    var c = new cmd(client);
-    workspace.showMessage('registering: ' + c.id);
-    registerCommand(c);
+    var c = new cmd(client)
+    workspace.showMessage('registering: ' + c.id)
+    registerCommand(c)
   })
 
   subscriptions.push(
     services.registLanguageClient(client)
   )
-
-  // languages.registerCodeActionProvider(
-  // languageIds,
-  // new QuickfixProvider(client),
-  // 'tsserver',
-  // [CodeActionKind.QuickFix]);
 }
 
 function registerCustomClientNotificationHandlers(client: LanguageClient): void {

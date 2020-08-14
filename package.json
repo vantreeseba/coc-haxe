@@ -56,15 +56,15 @@
   "devDependencies": {
     "@chemzqm/tsconfig": "^0.0.3",
     "@chemzqm/tslint-config": "^1.0.18",
-    "@types/node": "^12.12.35",
-    "coc.nvim": "^0.0.73",
+    "@types/node": "^14.0.23",
+    "coc.nvim": "^0.0.77",
     "rimraf": "^3.0.2",
-    "ts-loader": "^6.2.2",
-    "tslint": "^5.20.1",
-    "typescript": "^3.8.3",
+    "ts-loader": "^8.0.1",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.6",
     "vscode-languageserver-protocol": "^3.15.3",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {}
 }

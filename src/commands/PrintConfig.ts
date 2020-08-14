@@ -10,7 +10,8 @@ export default class RestartClientCommand implements Command {
   }
 
   public execute(): void {
-    workspace.showMessage(JSON.stringify(workspace.getConfiguration('haxe')));
+    var config = JSON.stringify(workspace.getConfiguration('haxe'));
+    workspace.showMessage(config);
   }
 }
 
