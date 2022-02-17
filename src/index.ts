@@ -92,7 +92,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
   Commands.forEach(cmd => {
     var c = new cmd(client)
-    workspace.showMessage('registering: ' + c.id)
+    workspace.showMessage('registering: ' + c.id);
     registerCommand(c)
   })
 
