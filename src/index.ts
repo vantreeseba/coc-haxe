@@ -7,7 +7,8 @@ import {
   services,
   TransportKind,
   LanguageClientOptions,
-  WorkspaceConfiguration
+  WorkspaceConfiguration,
+  window
 } from 'coc.nvim'
 import {DocumentSelector} from 'vscode-languageserver-protocol'
 import Command from './commands/Command'
@@ -39,11 +40,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
   if (haxeConfig.useModule) {
     modulePath = requireFunc.resolve(haxeConfig.modulePath)
     if (!fs.existsSync(modulePath)) {
-      workspace.showMessage(`haxe server module not found!`, 'error')
+      window.showMessage(`haxe server module not found!`, 'error')
       return
     }
   } else {
-    workspace.showMessage('External server not supported yet.', 'error')
+    window.showMessage('External server not supported yet.', 'error')
     return
   }
 
@@ -82,7 +83,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     registerCustomClientNotificationHandlers(client)
   }).catch(_e => {
     // noop
-    workspace.showMessage('Haxe language server client failed.', 'more')
+    window.showMessage('Haxe language server client failed.', 'more')
   })
 
   function registerCommand(cmd: Command): void {
@@ -92,7 +93,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
   Commands.forEach(cmd => {
     var c = new cmd(client)
-    workspace.showMessage('registering: ' + c.id);
+    window.showMessage('registering: ' + c.id);
     registerCommand(c)
   })
 
@@ -103,12 +104,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
 function registerCustomClientNotificationHandlers(client: LanguageClient): void {
   client.onNotification('$/displayInfo', (msg: string) => {
-    workspace.showMessage(msg, 'more')
+    window.showMessage(msg, 'more')
   })
   client.onNotification('$/displayWarning', (msg: string) => {
-    workspace.showMessage(msg, 'warning')
+    window.showMessage(msg, 'warning')
   })
   client.onNotification('$/displayError', (msg: string) => {
-    workspace.showMessage(msg, 'error')
+    window.showMessage(msg, 'error')
   })
 }
