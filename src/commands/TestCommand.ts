@@ -1,4 +1,4 @@
-import {LanguageClient, window, Command} from 'coc.nvim';
+import {LanguageClient, window, Command, workspace} from 'coc.nvim';
 
 export default class TestCommand implements Command {
   public readonly title = 'haxe.test';
@@ -9,6 +9,15 @@ export default class TestCommand implements Command {
   }
 
   public async execute(): Promise<void> {
-    window.showMessage('test command ran.');
+    const hxmlFiles = await workspace.findFiles('*.hxml')
+
+    //     console.log("hi", hxmlFiles)
+    const fileNames = hxmlFiles.map(x => x.path);
+
+    window.showQuickpick(fileNames, 'Select Haxe Configuration').then(x => {
+      window.showInformationMessage(`chose: ${hxmlFiles[x]}`)
+    })
+
+    //     window.showMessage('test command ran.');
   }
 }

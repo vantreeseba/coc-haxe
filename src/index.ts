@@ -47,15 +47,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   const config = workspace.getConfiguration('haxe')
   if (config.enable === false) return
 
-  const selector = [{
-    language: 'haxe',
-    scheme: 'file',
-    //     pattern: '*.hx'
-  }, {
-    language: 'hxml',
-    scheme: 'file',
-    //     pattern: '*.hxml'
-  }]
+  const selector = ['haxe', 'hxml']
 
   let serverOptions: ServerOptions = {
     module: resolveServerModule(config),

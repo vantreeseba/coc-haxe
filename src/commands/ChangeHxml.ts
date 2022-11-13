@@ -1,4 +1,4 @@
-import {LanguageClient, workspace, Command} from 'coc.nvim';
+import {LanguageClient, workspace, window, Command} from 'coc.nvim';
 
 export default class HaxeChangeHxmlCommand implements Command {
   public readonly title = 'haxe.changeHxml';
@@ -8,10 +8,16 @@ export default class HaxeChangeHxmlCommand implements Command {
     this.client = client
   }
 
-  public async execute(hxml: string): Promise<void> {
-    workspace.getConfiguration('haxe').update('hxml', hxml);
-    this.client.sendNotification('haxe/didChangeDisplayArguments', {
-      arguments: [hxml],
-    });
+  public async execute(): Promise<void> {
+    const hxmlFiles = await workspace.findFiles('*.hxml')
+    const fileNames = hxmlFiles.map(x => x.path);
+
+    window.showQuickpick(fileNames, 'Select Haxe Configuration').then(x => {
+      const hxml = fileNames[x]
+      workspace.getConfiguration('haxe').update('hxml', hxml);
+      this.client.sendNotification('haxe/didChangeDisplayArguments', {
+        arguments: [hxml],
+      });
+    })
   }
 }
