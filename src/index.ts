@@ -10,7 +10,6 @@ import {
   WorkspaceConfiguration,
   window
 } from 'coc.nvim'
-import {DocumentSelector} from 'vscode-languageserver-protocol'
 import Command from './commands/Command'
 import Commands from './commands'
 import fs from 'fs'
@@ -29,39 +28,41 @@ function getConfig(config: WorkspaceConfiguration): any {
   return res
 }
 
-export async function activate(context: ExtensionContext): Promise<void> {
-  let {subscriptions} = context
-  let c = workspace.getConfiguration()
-  const haxeConfig = c.get('haxe') as any
-  const enable = haxeConfig.enable
-  if (enable === false) return
-  let modulePath: string
-
-  if (haxeConfig.useModule) {
-    modulePath = requireFunc.resolve(haxeConfig.modulePath)
+function resolveServerModule(config) {
+  if (config.useModule) {
+    let modulePath = requireFunc.resolve(config.modulePath)
     if (!fs.existsSync(modulePath)) {
-      window.showMessage(`haxe server module not found!`, 'error')
+      window.showErrorMessage('Haxe server module not found!')
       return
     }
+    return modulePath
   } else {
-    window.showMessage('External server not supported yet.', 'error')
+    window.showErrorMessage('External server not supported yet.')
     return
   }
+}
 
-  const selector: DocumentSelector = [{
+export async function activate(context: ExtensionContext): Promise<void> {
+  let {subscriptions} = context
+  const config = workspace.getConfiguration('haxe')
+  if (config.enable === false) return
+
+  const selector = [{
     language: 'haxe',
-    scheme: 'file'
+    scheme: 'file',
+    //     pattern: '*.hx'
   }, {
     language: 'hxml',
-    scheme: 'file'
+    scheme: 'file',
+    //     pattern: '*.hxml'
   }]
 
   let serverOptions: ServerOptions = {
-    module: modulePath,
+    module: resolveServerModule(config),
     transport: TransportKind.stdio,
     options: {
       cwd: workspace.root,
-      execArgv: haxeConfig.execArgv || []
+      execArgv: config.execArgv || []
     }
   }
 
@@ -73,43 +74,35 @@ export async function activate(context: ExtensionContext): Promise<void> {
     },
     outputChannelName: 'haxe',
     initializationOptions: {
-      displayArguments: [haxeConfig.hxml],
-      config: getConfig(c)
+      displayArguments: [config.hxml],
+      config: getConfig(config)
     },
   }
 
   let client = new LanguageClient('haxe', 'Haxe Language Server', serverOptions, clientOptions)
+  subscriptions.push(
+    services.registLanguageClient(client)
+  )
+
+  Commands.forEach(cmd => {
+    var c = new cmd(client)
+    window.showInformationMessage(`registering: ${c.title}`);
+    subscriptions.push(commands.registerCommand(c.title, c.execute, c))
+  })
+
   client.onReady().then(() => {
     registerCustomClientNotificationHandlers(client)
   }).catch(_e => {
     // noop
-    window.showMessage('Haxe language server client failed.', 'more')
+    window.showInformationMessage('Haxe language server client failed.')
   })
 
-  function registerCommand(cmd: Command): void {
-    let {id, execute} = cmd
-    subscriptions.push(commands.registerCommand(id as string, execute, cmd))
-  }
 
-  Commands.forEach(cmd => {
-    var c = new cmd(client)
-    window.showMessage('registering: ' + c.id);
-    registerCommand(c)
-  })
 
-  subscriptions.push(
-    services.registLanguageClient(client)
-  )
 }
 
 function registerCustomClientNotificationHandlers(client: LanguageClient): void {
-  client.onNotification('$/displayInfo', (msg: string) => {
-    window.showMessage(msg, 'more')
-  })
-  client.onNotification('$/displayWarning', (msg: string) => {
-    window.showMessage(msg, 'warning')
-  })
-  client.onNotification('$/displayError', (msg: string) => {
-    window.showMessage(msg, 'error')
-  })
+  client.onNotification('$/displayInfo', window.showInformationMessage)
+  client.onNotification('$/displayWarning', window.showWarningMessage)
+  client.onNotification('$/displayError', window.showErrorMessage)
 }

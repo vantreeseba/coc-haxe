@@ -3,3 +3,4 @@ tsconfig.json
 tslint.json
 *.map
 yarn.lock
+node_modules

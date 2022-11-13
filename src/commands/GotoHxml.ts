@@ -1,11 +1,13 @@
-import { LanguageClient, workspace, window } from 'coc.nvim';
+import {LanguageClient, workspace, window, Command} from 'coc.nvim';
 import path from 'path';
-import Command from './Command';
 
 export default class HaxeGotoHxmlCommand implements Command {
-  public readonly id = 'haxe.goToHxml';
+  public readonly title = 'haxe.goToHxml';
+  public readonly command = 'haxe.goToHxml';
 
-  public constructor(private readonly client: LanguageClient) {}
+  public constructor(private readonly client: LanguageClient) {
+    this.client = client
+  }
 
   public async execute(): Promise<void> {
     let hxml = workspace.getConfiguration('haxe').hxml;

@@ -1,10 +1,12 @@
-import { LanguageClient, workspace, window } from 'coc.nvim';
-import Command from './Command';
+import {LanguageClient, workspace, Command} from 'coc.nvim';
 
 export default class HaxeChangeHxmlCommand implements Command {
-  public readonly id = 'haxe.changeHxml';
+  public readonly title = 'haxe.changeHxml';
+  public readonly command = 'haxe.changeHxml';
 
-  public constructor(private readonly client: LanguageClient) {}
+  public constructor(private readonly client: LanguageClient) {
+    this.client = client
+  }
 
   public async execute(hxml: string): Promise<void> {
     workspace.getConfiguration('haxe').update('hxml', hxml);

@@ -1,14 +1,21 @@
 {
-  "extends": "./node_modules/@chemzqm/tsconfig/tsconfig.json",
   "compilerOptions": {
-    "declaration": false,
-    "outDir": "lib",
-    "target": "es2015",
+    "target": "es2017",
+    "lib": [
+      "es2017",
+      "es2018"
+    ],
     "module": "commonjs",
+    "declaration": false,
+    "sourceMap": true,
+    "outDir": "lib",
+    "strict": true,
     "moduleResolution": "node",
-    "lib": ["es2018"],
-    "plugins": []
+    "resolveJsonModule": true,
+    "noImplicitAny": false,
+    "esModuleInterop": true
   },
-  "include": ["src"],
-  "exclude": []
+  "include": [
+    "src"
+  ]
 }
