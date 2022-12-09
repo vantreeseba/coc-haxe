@@ -10,12 +10,8 @@ import {
   WorkspaceConfiguration,
   window
 } from 'coc.nvim'
-import Command from './commands/Command'
 import Commands from './commands'
 import fs from 'fs'
-declare var __webpack_require__: any
-declare var __non_webpack_require__: any
-const requireFunc = typeof __webpack_require__ === "function" ? __non_webpack_require__ : require
 
 const sections = ['haxe']
 
@@ -28,17 +24,19 @@ function getConfig(config: WorkspaceConfiguration): any {
   return res
 }
 
-function resolveServerModule(config) {
+function resolveServerModule(config: WorkspaceConfiguration): string {
   if (config.useModule) {
-    let modulePath = requireFunc.resolve(config.modulePath)
+    let modulePath = require.resolve(config.modulePath)
     if (!fs.existsSync(modulePath)) {
-      window.showErrorMessage('Haxe server module not found!')
-      return
+      const err = 'Haxe server module not found!'
+      window.showErrorMessage(err)
+      throw new Error(err);
     }
     return modulePath
   } else {
-    window.showErrorMessage('External server not supported yet.')
-    return
+    const err = 'External haxe server not supported yet.';
+    window.showErrorMessage(err)
+    throw new Error(err);
   }
 }
 
@@ -46,8 +44,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
   let {subscriptions} = context
   const config = workspace.getConfiguration('haxe')
   if (config.enable === false) return
-
-  const selector = ['haxe', 'hxml']
 
   let serverOptions: ServerOptions = {
     module: resolveServerModule(config),
@@ -59,7 +55,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   }
 
   let clientOptions: LanguageClientOptions = {
-    documentSelector: selector,
+    documentSelector: ['haxe', 'hxml'],
     synchronize: {
       configurationSection: sections,
       fileEvents: workspace.createFileSystemWatcher('**/*.hx*', false, false, false)
@@ -88,9 +84,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
     // noop
     window.showInformationMessage('Haxe language server client failed.')
   })
-
-
-
 }
 
 function registerCustomClientNotificationHandlers(client: LanguageClient): void {
