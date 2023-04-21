@@ -4,6 +4,9 @@ Haxe language server extension for [coc.nvim](https://github.com/neoclide/coc.nv
 
 Language server features provided by [haxe-language-server](https://github.com/vshaxe/haxe-language-server).
 
+## Looking for haxe highlighting in neovim?
+check out: https://github.com/vantreeseba/tree-sitter-haxe
+
 ## Install
 
 In your vim/neovim, run command:
