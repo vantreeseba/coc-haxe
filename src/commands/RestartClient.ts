@@ -1,11 +1,11 @@
-import {LanguageClient, window, Command} from 'coc.nvim';
+import { LanguageClient, window, Command } from 'coc.nvim';
 
 export default class RestartClientCommand implements Command {
   public readonly title = 'haxe.restart';
   public readonly command = 'haxe.restart';
 
   public constructor(private readonly client: LanguageClient) {
-    this.client = client
+    this.client = client;
   }
 
   public execute(): void {

@@ -1,4 +1,4 @@
-import {LanguageClient, workspace, window, Command} from 'coc.nvim';
+import { LanguageClient, workspace, window, Command } from 'coc.nvim';
 import path from 'path';
 
 export default class HaxeGotoHxmlCommand implements Command {
@@ -6,7 +6,7 @@ export default class HaxeGotoHxmlCommand implements Command {
   public readonly command = 'haxe.goToHxml';
 
   public constructor(private readonly client: LanguageClient) {
-    this.client = client
+    this.client = client;
   }
 
   public async execute(): Promise<void> {
