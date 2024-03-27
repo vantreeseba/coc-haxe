@@ -13,12 +13,22 @@ export default class HaxeChangeHxmlCommand implements Command {
     const hxmlFiles = await workspace.findFiles('*.hxml');
     const fileNames = hxmlFiles.map((x) => workspace.getRelativePath(x.path));
 
-    window.showQuickpick(fileNames, 'Select Haxe Configuration').then((x) => {
-      const hxml = fileNames[x];
-      workspace.getConfiguration('haxe').update('hxml', hxml);
-      this.client.sendNotification('haxe/didChangeDisplayArguments', {
-        arguments: [hxml],
-      });
+    const picked = await window.showQuickPick(fileNames, {
+      title: 'Select HXML File',
+      matchOnDescription: true,
     });
+
+    if (picked == -1) {
+      window.showInformationMessage('Did not change chosen hxml.');
+      return;
+    }
+
+    const hxml = picked;
+    workspace.getConfiguration('haxe').update('hxml', hxml);
+
+    this.client.sendNotification('haxe/didChangeDisplayArguments', {
+      arguments: [hxml],
+    });
+    window.showInformationMessage('Changed hxml to: ' + hxml);
   }
 }
