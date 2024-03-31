@@ -1,6 +1,6 @@
 {
   "name": "coc-haxe",
-  "version": "0.19.0",
+  "version": "0.20.0",
   "description": "Haxe language server extension for coc.nvim",
   "main": "lib/index.js",
   "publisher": "vantreeseba",
