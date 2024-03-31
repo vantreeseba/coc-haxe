@@ -16,8 +16,8 @@ export default class HaxeFormatOpenCommand implements Command {
         const response: TextEdit[] = await this.client.sendRequest('textDocument/formatting', {
           textDocument: { uri: file.uri.toString() },
           options: {
-            tabSize: 2,
-            insertSpaces: true,
+            //             tabSize: 2,
+            //             insertSpaces: true,
           },
         });
 
