@@ -4,7 +4,10 @@
   "description": "Haxe language server extension for coc.nvim",
   "main": "lib/index.js",
   "publisher": "vantreeseba",
-  "repository": "vantreeseba/coc-haxe",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vantreeseba/coc-haxe.git"
+  },
   "engines": {
     "coc": "^0.0.58"
   },
